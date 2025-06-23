@@ -1,5 +1,0 @@
-# Prisma 自动生成的文件
-src/generated/**/*
-# 其他需要忽略的文件
-node_modules
-.next
