@@ -141,23 +141,41 @@ fi
 echo -e "${BLUE}正在构建项目...${NC}"
 npm run build
 
-# 检查Amplify CLI是否安装
-if ! command -v amplify &> /dev/null; then
-    echo -e "${YELLOW}正在安装Amplify CLI...${NC}"
-    npm install -g @aws-amplify/cli
+# 检查是否希望部署到AWS Amplify
+echo -e "${YELLOW}是否要部署到AWS Amplify? (输入y继续，其他键跳过): ${NC}"
+read deploy_to_amplify
+
+if [ "$deploy_to_amplify" = "y" ]; then
+    # 检查AWS CLI是否安装
+    if ! command -v aws &> /dev/null; then
+        echo -e "${RED}错误: 未找到AWS CLI。跳过Amplify部署。${NC}"
+    else
+        # 检查Amplify CLI是否安装
+        if ! command -v amplify &> /dev/null; then
+            echo -e "${YELLOW}正在安装Amplify CLI...${NC}"
+            npm install -g @aws-amplify/cli
+        fi
+
+        # 尝试初始Amplify项目
+        echo -e "${BLUE}正在初始Amplify项目...${NC}"
+        if amplify init --yes; then
+            # 添加托管配置
+            echo -e "${BLUE}正在添加托管配置...${NC}"
+            if amplify add hosting; then
+                # 部署到Amplify
+                echo -e "${GREEN}正在部署到AWS Amplify...${NC}"
+                amplify publish --yes
+            else
+                echo -e "${YELLOW}添加托管配置失败，跳过Amplify部署。${NC}"
+            fi
+        else
+            echo -e "${YELLOW}Amplify初始化失败，这可能是由于AWS账户限制或权限问题。${NC}"
+            echo -e "${YELLOW}不用担心，我们仍然成功构建了项目！${NC}"
+        fi
+    fi
+else
+    echo -e "${BLUE}已跳过AWS Amplify部署，只进行了项目构建。${NC}"
 fi
-
-# 初始化Amplify项目
-echo -e "${BLUE}正在初始化Amplify项目...${NC}"
-amplify init --yes
-
-# 添加托管配置
-echo -e "${BLUE}正在添加托管配置...${NC}"
-amplify add hosting
-
-# 部署到Amplify
-echo -e "${GREEN}正在部署到AWS Amplify...${NC}"
-amplify publish --yes
 
 echo -e "${BLUE}=====================================${NC}"
 echo -e "${GREEN}部署完成!${NC}"
