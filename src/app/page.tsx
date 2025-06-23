@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[80px_1fr_80px] items-center justify-items-center min-h-screen p-8 pb-20 gap-8 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+    <div className="grid grid-rows-[80px_1fr_80px] items-center justify-items-center min-h-screen p-8 pb-20 gap-8 sm:p-20">
       {/* 导航栏 */}
       <header className="w-full max-w-7xl flex items-center justify-between px-4 py-6 border-b border-gray-200">
         <div className="flex items-center gap-2">

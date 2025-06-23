@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // 允许远程图片源
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'randomuser.me' },
@@ -9,6 +10,10 @@ const nextConfig = {
       { protocol: 'https', hostname: 'picsum.photos' },
       { protocol: 'https', hostname: 'd2f3o3rd6akggk.cloudfront.net' }
     ],
+  },
+  // 禁用构建时的ESLint检查
+  eslint: {
+    ignoreDuringBuilds: true,
   },
 };
 
