@@ -71,19 +71,36 @@ check_status "切换目录"
 # 4. 添加所有改动的文件
 echo_color "4️⃣ 添加所有改动文件..." "${GREEN}"
 git add .
-check_status "添加文件"
 
-# 5. 获取提交信息
-echo_color "5️⃣ 请输入提交信息 (默认: 'Update Next.js blog for Cloudflare Pages'):" "${YELLOW}"
-read commit_message
-if [ -z "$commit_message" ]; then
-  commit_message="Update Next.js blog for Cloudflare Pages"
+# 检查是否有变更需要提交
+GIT_STATUS=$(git status --porcelain)
+if [ -z "$GIT_STATUS" ]; then
+  echo_color "ℹ️ 没有发现新的变更，跳过提交步骤" "${YELLOW}"
+  HAS_CHANGES=false
+else
+  echo_color "✅ 文件变更已添加" "${GREEN}"
+  HAS_CHANGES=true
+
+  # 5. 获取提交信息
+  echo_color "5️⃣ 请输入提交信息 (默认: 'Update Next.js blog for Cloudflare Pages'):" "${YELLOW}"
+  read commit_message
+  if [ -z "$commit_message" ]; then
+    commit_message="Update Next.js blog for Cloudflare Pages"
+  fi
+
+  # 6. 提交改动
+  echo_color "6️⃣ 提交改动: '$commit_message'" "${GREEN}"
+  git commit -m "$commit_message"
+  if [ $? -ne 0 ]; then
+    echo_color "❌ 提交改动失败，但将继续尝试推送" "${YELLOW}"
+  else
+    echo_color "✅ 提交改动成功" "${GREEN}"
+  fi
 fi
 
-# 6. 提交改动
-echo_color "6️⃣ 提交改动: '$commit_message'" "${GREEN}"
-git commit -m "$commit_message"
-check_status "提交改动"
+# 显示Git状态
+echo_color "当前 Git 状态:" "${BLUE}"
+git status
 
 # 7. 使用SSH密钥进行推送
 echo_color "7️⃣ 推送到GitHub..." "${GREEN}"
