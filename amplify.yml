@@ -4,7 +4,10 @@ frontend:
     # 预构建阶段：安装依赖
     preBuild:
       commands:
-        - n 20.0.0
+        - curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+        - export NVM_DIR="$HOME/.nvm"
+        - [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # 加载 nvm
+        - nvm install 20
         - node -v
         - npm install -g npm@latest
         - npm ci
