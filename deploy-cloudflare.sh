@@ -33,8 +33,8 @@ REPO_DIR="/Users/pangjianfeng/CascadeProjects/Develop/nextjs-blog"
 BLOG_DIR="/Users/pangjianfeng/CascadeProjects/Develop/nextjs-blog"
 ENV_FILE="$BLOG_DIR/.env"
 
-# 设置新的仓库地址
-GIT_REPO="https://github.com/RicardoPang/nextjs-blog.git"
+# 设置新的SSH仓库地址
+GIT_REPO="git@github.com:RicardoPang/nextjs-blog.git"
 
 echo_color "📂 当前目录: $CURRENT_DIR" "${GREEN}"
 echo_color "📂 项目目录: $REPO_DIR" "${GREEN}"
@@ -85,33 +85,32 @@ echo_color "6️⃣ 提交改动: '$commit_message'" "${GREEN}"
 git commit -m "$commit_message"
 check_status "提交改动"
 
-# 7. 使用令牌进行推送
+# 7. 使用SSH密钥进行推送
 echo_color "7️⃣ 推送到GitHub..." "${GREEN}"
 
-if [ ! -z "$TOKEN" ]; then
-  # 使用Git的凭证助手临时存储令牌
-  echo_color "使用安全令牌推送..." "${GREEN}"
-  git config --local credential.helper "!f() { echo username=RicardoPang; echo password=$TOKEN; }; f"
-  
-  # 设置正确的远程仓库地址
-  git remote set-url origin $GIT_REPO
-  
-  # 推送
-  echo_color "推送到新仓库: $GIT_REPO" "${GREEN}"
-  git push origin main
-  GIT_PUSH_RESULT=$?
-  
-  # 立即清除凭证助手
-  git config --local --unset credential.helper
-else
-  # 常规推送
-  echo_color "使用常规方式推送..." "${YELLOW}"
-  # 设置正确的远程仓库地址
-  git remote set-url origin $GIT_REPO
-  echo_color "推送到新仓库: $GIT_REPO" "${GREEN}"
-  git push origin main
-  GIT_PUSH_RESULT=$?
-fi
+# 确保使用SSH协议推送
+echo_color "配置SSH推送..." "${GREEN}"
+
+# 设置正确的远程仓库地址
+git remote set-url origin $GIT_REPO
+
+# 显示远程仓库信息
+echo_color "当前远程仓库配置:" "${GREEN}"
+git remote -v
+
+# 添加GitHub的SSH Key
+echo_color "确保SSH密钥可用..." "${GREEN}"
+eval $(ssh-agent -s) > /dev/null
+ssh-add ~/.ssh/github_ricardo 2>/dev/null || echo_color "警告: 添加SSH密钥失败，如果密钥已加入请忽略" "${YELLOW}"
+
+# 测试SSH连接
+echo_color "测试SSH连接..." "${GREEN}"
+ssh -T git@github.com -o StrictHostKeyChecking=no || echo_color "警告: SSH测试可能返回非零值，但如果显示用户名则说明连接成功" "${YELLOW}"
+
+# 推送
+echo_color "推送到新仓库: $GIT_REPO" "${GREEN}"
+git push origin main
+GIT_PUSH_RESULT=$?
 
 # 检查推送结果
 if [ $GIT_PUSH_RESULT -eq 0 ]; then
