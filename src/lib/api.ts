@@ -52,7 +52,7 @@ async function fetchAPI(endpoint: string, options: RequestInit = {}) {
  */
 export const articlesApi = {
   /**
-   * 获取文章列表 - 不使用分页，直接获取全部文章
+   * 获取文章列表
    * @param category - 分类名称（可选）
    */
   getArticles: async (category?: string): Promise<PaginatedResponse<Article>> => {

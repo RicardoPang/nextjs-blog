@@ -1,7 +1,3 @@
-/**
- * 定义API返回数据的类型
- */
-
 // 文章类型
 export interface Article {
   id: number;
