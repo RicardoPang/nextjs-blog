@@ -1,6 +1,6 @@
 /**
  * API服务 - 封装所有对后端API的请求
- * 使用AWS Lambda部署的API
+ * 使用CloudFront CDN加速的AWS Lambda API
  */
 import { 
   Article, 
@@ -11,8 +11,8 @@ import {
   GitHubRepositoryResponse
 } from '@/types';
 
-// API基址URL - 使用AWS Lambda部署的API
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://nf6s5yduil.execute-api.ap-southeast-2.amazonaws.com/Prod';
+// API基址URL - 使用CloudFront CDN加速的API
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://d16v0npl8z516t.cloudfront.net';
 
 /**
  * 通用请求函数
