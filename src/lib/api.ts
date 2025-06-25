@@ -1,6 +1,6 @@
 /**
  * API服务 - 封装所有对后端API的请求
- * 使用CloudFront部署的Nest.js API
+ * 使用AWS Lambda部署的API
  */
 import { 
   Article, 
@@ -11,8 +11,8 @@ import {
   GitHubRepositoryResponse
 } from '@/types';
 
-// API基址URL - 使用Nest.js部署在CloudFront的API
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://d2f3o3rd6akggk.cloudfront.net';
+// API基址URL - 使用AWS Lambda部署的API
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://nf6s5yduil.execute-api.ap-southeast-2.amazonaws.com/Prod';
 
 /**
  * 通用请求函数
